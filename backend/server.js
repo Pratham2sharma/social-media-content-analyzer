@@ -16,7 +16,7 @@ const VERCEL_FRONTEND_URL = process.env.VERCEL_FRONTEND_URL;
 const corsOptions = {
   origin:
     VERCEL_FRONTEND_URL ||
-    "https://social-media-content-analyzer-flax.vercel.app/api/analyze",
+    "https://social-media-content-analyzer-flax.vercel.app",
 };
 // Middleware
 app.use(cors(corsOptions));
