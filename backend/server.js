@@ -11,8 +11,15 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const VERCEL_FRONTEND_URL = process.env.VERCEL_FRONTEND_URL;
+
+const corsOptions = {
+  origin:
+    VERCEL_FRONTEND_URL ||
+    "https://social-media-content-analyzer-flax.vercel.app/",
+};
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 //routes
