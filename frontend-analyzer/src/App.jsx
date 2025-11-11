@@ -8,6 +8,7 @@ import ErrorMessage from "./components/ErrorMessage";
 import LoadingSpinner from "./components/LoadingSpinner";
 import UploadIcon from "./components/UploadIcon";
 import { useEffect } from "react";
+import imageCompression from "browser-image-compression";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -20,18 +21,57 @@ function App() {
     import.meta.env.VITE_BACKEND_API_URL || "http://localhost:3000/api/analyze";
 
   const onDrop = useCallback(
-    (acceptedFiles) => {
+    async (acceptedFiles) => {
+      // Make async
       if (acceptedFiles.length > 0) {
-        const selectedFile = acceptedFiles[0];
-        setFile(selectedFile);
+        let selectedFile = acceptedFiles[0];
+
         setAnalysisResult(null);
         setError(null);
+        setIsLoading(true); // Start loading *during* compression
+        console.log(
+          `Original file size: ${(selectedFile.size / 1024 / 1024).toFixed(
+            2
+          )} MB`
+        );
 
         // Revoke the old URL if one exists
         if (previewUrl) {
           URL.revokeObjectURL(previewUrl);
         }
+
+        // --- COMPRESSION LOGIC ---
+        if (selectedFile.type.startsWith("image/")) {
+          try {
+            const options = {
+              maxSizeMB: 0.5, // Max file size
+              maxWidthOrHeight: 800, // Resize to 1024px max
+              useWebWorker: true, // Use a web worker for speed
+            };
+            const compressedFile = await imageCompression(
+              selectedFile,
+              options
+            );
+            console.log(
+              `Compressed file size: ${(
+                compressedFile.size /
+                1024 /
+                1024
+              ).toFixed(2)} MB`
+            );
+            selectedFile = compressedFile; // Use the new, smaller file
+          } catch (compressionError) {
+            console.error("Image compression failed:", compressionError);
+            setError("Failed to process image. Please try another file.");
+            setIsLoading(false);
+            return;
+          }
+        }
+        // --- END OF COMPRESSION LOGIC ---
+
+        setFile(selectedFile);
         setPreviewUrl(URL.createObjectURL(selectedFile));
+        setIsLoading(false); // Stop 'compression' loading
       }
     },
     [previewUrl]
@@ -88,6 +128,7 @@ function App() {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        timeout: 180000, // 3 minutes timeout for OCR processing
       });
 
       // 4. Success: Save the result
