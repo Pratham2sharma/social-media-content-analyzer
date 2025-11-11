@@ -1,87 +1,108 @@
-Social Media Content Analyzer
+# 📊 Social Media Content Analyzer
 
-This is a full-stack MERN application built for a technical assessment. The application analyzes social media posts (uploaded as PDFs or images) and provides actionable suggestions for improving user engagement.
+> A full-stack **MERN application** that analyzes social media content (PDFs or Images) and provides **actionable insights** to boost engagement.
 
-Features
+LIVE LINK - https://social-media-content-analyzer-flax.vercel.app/
+---
 
-Drag-and-Drop File Upload: Supports PDF, PNG, and JPG files using react-dropzone.
+## 🚀 Overview
 
-Multi-Format Text Extraction:
+**Social Media Content Analyzer** helps users understand how engaging their social media posts are — by analyzing **sentiment, readability, and actionability**.  
+It accepts **PDF or image uploads**, extracts the text using **OCR and PDF parsing**, and generates intelligent **suggestions** like _“Add a question!”_ or _“Tone down negativity.”_
 
-PDF Parsing: Uses pdf-parse on the backend to extract text from PDF documents.
+This project was built as part of a **technical assessment**, with a focus on production-quality code and clean architecture.
 
-OCR: Uses tesseract.js to perform Optical Character Recognition on image files.
+---
 
-Engagement Analysis Engine: A custom "expert system" that analyzes extracted text for:
+## ✨ Features
 
-Sentiment (sentiment)
+### 🖼️ File Upload & Extraction
+- **Drag-and-Drop Uploads** via `react-dropzone`
+- Supports **PDF**, **PNG**, and **JPG**
+- **PDF Parsing** using [`pdf-parse`](https://www.npmjs.com/package/pdf-parse)
+- **OCR for Images** using [`tesseract.js`](https://www.npmjs.com/package/tesseract.js)
 
-Readability (text-statistics)
+### 🧠 Engagement Analysis Engine
+- **Sentiment Analysis:** via [`sentiment`](https://www.npmjs.com/package/sentiment)
+- **Readability Metrics:** via [`text-statistics`](https://www.npmjs.com/package/text-statistics)
+- **Actionability Detection:** custom regex rules for:
+  - Call-to-Actions (CTAs)
+  - Questions (`?`)
+  - Hashtags (`#`)
+- **Human-Readable Suggestions:** e.g.:
+  - _“Ask a question to engage users!”_
+  - _“This post feels too negative.”_
 
-Actionability (presence of CTAs, questions, hashtags)
+### ⚙️ Architecture & Stack
+| Layer | Technology |
+|--------|-------------|
+| **Frontend** | React (Vite) + Tailwind CSS + Axios |
+| **Backend** | Node.js + Express (ESM) |
+| **Database** | MongoDB Atlas (via Mongoose) |
+| **File Handling** | Multer |
+| **Text Extraction** | pdf-parse, tesseract.js |
+| **Architecture** | MVC Pattern for scalability & clarity |
 
-Actionable Suggestions: Provides a list of human-readable suggestions (e.g., "Ask a question!", "This post seems negative.").
+### 🧩 UX Features
+- Smooth **drag-and-drop** interface  
+- **Loading & error states** for all API calls  
+- Clean and **responsive design**  
+- Persists all analyses to **MongoDB Atlas**
 
-Full MERN Stack:
+---
 
-Frontend: React (Vite) + Tailwind CSS + axios
+## 🧱 Technical Approach
 
-Backend: Node.js + Express (ESM) + MongoDB
+The app is divided into **two primary challenges**:
 
-Database: MongoDB Atlas + mongoose
+1. **File Processing:**  
+   Efficient extraction of text using `pdf-parse` (for PDFs) and `tesseract.js` (for images), managed by `multer` for uploads.
 
-Clean Architecture: The backend uses an MVC (Models-Views-Controllers) structure to keep logic separated and clean.
+2. **Engagement Analysis:**  
+   A lightweight “expert system” that combines:
+   - **Sentiment** → emotional tone  
+   - **Readability** → ease of comprehension  
+   - **Actionability** → presence of engagement triggers  
 
-Full UX Flow: Includes loading states, error handling, and a clean results display.
+Each factor contributes to an overall suggestion set returned to the frontend.
 
-Technical Approach & Brief Write-up
+---
 
-(As required by the assignment)
+## 🛠️ Setup Instructions
 
-My approach was to build a robust, production-ready MERN stack application adhering to a clean MVC architecture for the backend.
+### 🧩 Prerequisites
+- Node.js **v18+**
+- MongoDB Atlas account (or a local MongoDB instance)
 
-I chose a MERN stack for its speed and unified JavaScript ecosystem. The core challenge was twofold: file processing and analysis. For processing, I used multer for file handling and two specialized libraries: pdf-parse for its efficiency with PDFs and tesseract.js for its powerful server-side OCR capabilities.
+---
 
-For the "engagement analyzer," I went beyond simple sentiment. I built a small "expert system" in the controller that combines sentiment analysis with text-statistics (for readability) and custom regex checks for key engagement drivers (like CTAs, questions, and hashtags). This engine generates a list of actionable, human-readable suggestions.
+### 🖥️ Backend Setup (`/backend`)
 
-The frontend is a modern React + Vite app styled with Tailwind CSS. It provides a seamless user experience, handling the drag-and-drop UI (react-dropzone), asynchronous API calls (axios), and all required loading/error states. All results, including the analysis, are saved to a MongoDB Atlas database, making the application scalable and persistent.
-
-How to Run Locally
-
-Prerequisites
-
-Node.js (v18+)
-
-MongoDB Atlas Account (or a local MongoDB instance)
-
-1. Backend Setup (/backend-analyzer)
-
-# Go into the backend folder
-cd backend-analyzer
+```bash
+# Navigate to backend
+cd backend
 
 # Install dependencies
 npm install
 
-# Create a .env file and add your MongoDB connection string
-# MONGO_URI=your_mongodb_connection_string
+# Add environment variables
+# Create .env and add:
+MONGO_URI=your_mongodb_connection_string
 
-# Run the server (with nodemon)
+# Start development server
 npm run dev
 
+### 🖥️ frontend Setup (`/frontend-analyzer`)
 
-2. Frontend Setup (/frontend-analyzer)
-
-# Go into the frontend folder
+# Navigate to frontend
 cd frontend-analyzer
 
 # Install dependencies
 npm install
 
-# (Optional) Create a .env file to specify the backend URL
-# VITE_BACKEND_API_URL=http://localhost:3000/api/analyze
+# (Optional) Add backend API URL
+# Create .env and add:
+VITE_BACKEND_API_URL=http://localhost:3000/api/analyze
 
-# Run the React app
+# Start the frontend
 npm run dev
-
-
-The app will be available at http://localhost:5173.
